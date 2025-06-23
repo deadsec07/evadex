@@ -1,0 +1,27 @@
+# macOS system files
+.DS_Store
+
+# Python virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# VSCode settings (optional)
+.vscode/
+
+# Environment & secret files
+.env
+
+# OS-level trash or logs
+*.log
+*.swp
+*.bak
+
+# Output artifacts
+*.wav
+telemetry.csv
+
