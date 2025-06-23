@@ -1,118 +1,126 @@
+# main.py
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import csv
+import math
 
 from missile import Missile
 from interceptor import Interceptor
 from evasion_ai import evasive_heading, get_noisy_interceptor_position
 
-missiles = [
-    Missile(0, 0, 2, 45),
-    Missile(-10, 5, 2, 60),
-    Missile(5, -10, 2, 30)
-]
+# === Simulation parameters ===
+MISSILE_DESTINATION = np.array([100, 100], dtype=float)
+HIT_DISTANCE        = 2.0
+MAX_STEPS           = 500
+BOOST_COOLDOWN_TIME = 5    # steps of cooldown after a boost
+
+# === Initialize missile & interceptors ===
+missile = Missile(5, -10, 2.0, 30)
+# ensure missile has a cooldown counter
+if not hasattr(missile, "_thrust_cooldown"):
+    missile._thrust_cooldown = 0
 
 interceptors = [
-    Interceptor(60, 60, 2),
-    Interceptor(-40, 70, 2),
-    Interceptor(70, -20, 2)
+    Interceptor(60,  60, 2.0), Interceptor(-40, 70, 2.0),
+    Interceptor(70, -20, 2.0), Interceptor(50, -50,2.0),
+    Interceptor(-50,-50, 2.0), Interceptor(30,  80,2.0),
+    Interceptor(-60, 30, 2.0), Interceptor(0,   90,2.0),
+    Interceptor(90,   0, 2.0), Interceptor(-90,  0,2.0),
 ]
 
-HIT_DISTANCE = 2
-MAX_STEPS = 100
-intercepted_flags = [False] * len(missiles)
-interceptor_busy = [False] * len(interceptors)
+hit = False
 
+# === Main simulation loop ===
 for t in range(MAX_STEPS):
-    for idx, missile in enumerate(missiles):
-        if intercepted_flags[idx]:
-            continue
+    # 1) Current missile position
+    m_pos = missile.get_position()
 
-        m_pos = missile.get_position()
-        closest_idx = np.argmin([np.linalg.norm(i.get_position() - m_pos) for i in interceptors])
-        threat_distance = np.linalg.norm(interceptors[closest_idx].get_position() - m_pos)
+    # 2) Sense interceptors (with optional noise)
+    noisy_ips = [
+        get_noisy_interceptor_position(ip.get_position())
+        for ip in interceptors
+    ]
 
-        if threat_distance < 10:
-            print(f"⚠️  Missile #{idx+1} is under threat! Distance: {threat_distance:.2f}")
-        elif threat_distance < 20:
-            print(f"🔶 Missile #{idx+1} is tracking interceptor...")
+    # 3) Compute evasion maneuver via DWA
+    new_heading, new_speed, used_boost = evasive_heading(
+        current_pos          = m_pos,
+        interceptor_positions = noisy_ips,
+        current_heading      = missile.heading,
+        base_speed           = missile.speed,
+        max_turn             = missile.max_turn,
+        boost_cooldown       = missile._thrust_cooldown
+    )
 
-        threat_pos = get_noisy_interceptor_position(interceptors[closest_idx].get_position())
-        new_heading = evasive_heading(m_pos, threat_pos, missile.heading)
-        missile.update_heading(new_heading)
-        missile.move()
+    # 4) Apply heading & speed
+    missile.update_heading(new_heading)
+    missile.speed = new_speed
+    if used_boost:
+        missile._thrust_cooldown = BOOST_COOLDOWN_TIME
 
-    for i_idx, interceptor in enumerate(interceptors):
-        if interceptor_busy[i_idx]:
-            continue
+    # 5) Move the missile
+    missile.move()
 
-        active_missiles = [m for j, m in enumerate(missiles) if not intercepted_flags[j]]
-        if not active_missiles:
-            continue
+    # 6) Move all interceptors (pure pursuit)
+    for intr in interceptors:
+        intr.pursue(missile.get_position())
 
-        nearest = min(active_missiles, key=lambda m: np.linalg.norm(interceptor.get_position() - m.get_position()))
-        interceptor.pursue(nearest.get_position())
+    # 7) Check for interception
+    for idx, intr in enumerate(interceptors):
+        if np.linalg.norm(intr.get_position() - missile.get_position()) < HIT_DISTANCE:
+            print(f"💥 Intercepted by interceptor #{idx+1} at step {t}")
+            hit = True
+            break
+    if hit:
+        break
 
-    for idx, m in enumerate(missiles):
-        if intercepted_flags[idx]:
-            continue
-        for i_idx, i in enumerate(interceptors):
-            if np.linalg.norm(m.get_position() - i.get_position()) < HIT_DISTANCE:
-                print(f"💥 Missile #{idx+1} Intercepted!")
-                intercepted_flags[idx] = True
-                interceptor_busy[i_idx] = True  # That interceptor stops pursuing others
-                break
+if not hit:
+    print("\n✅ Mission Success: Missile evaded all interceptors!")
 
-if not any(intercepted_flags):
-    print("\n✅ Mission Success: All missiles evaded tracking!")
-else:
-    survived = sum(1 for i in intercepted_flags if not i)
-    print(f"\n⚠️  {survived}/{len(missiles)} missiles survived.")
-
-# CSV Telemetry
-with open("telemetry.csv", "w", newline='') as f:
+# === Write telemetry.csv ===
+with open("telemetry.csv", "w", newline="") as f:
     writer = csv.writer(f)
-    writer.writerow(["TimeStep", *[f"M{i+1}_X" for i in range(len(missiles))], *[f"M{i+1}_Y" for i in range(len(missiles))], *[f"I{i+1}_X" for i in range(len(interceptors))], *[f"I{i+1}_Y" for i in range(len(interceptors))]])
-    for t in range(MAX_STEPS):
-        row = [t]
-        for m in missiles:
-            if t < len(m.trajectory):
-                row.extend(m.trajectory[t])
-            else:
-                row.extend([None, None])
-        for i in interceptors:
-            if t < len(i.trajectory):
-                row.extend(i.trajectory[t])
-            else:
-                row.extend([None, None])
+    writer.writerow(
+        ["Time", "M_X", "M_Y"] +
+        [f"I{j+1}_X" for j in range(len(interceptors))] +
+        [f"I{j+1}_Y" for j in range(len(interceptors))]
+    )
+    for step in range(len(missile.trajectory)):
+        row = [step] + list(missile.trajectory[step])
+        for intr in interceptors:
+            # trajectories are synchronized in length
+            row += list(intr.trajectory[step])
         writer.writerow(row)
 
-# Animation
+# === Animate the result ===
 fig, ax = plt.subplots()
 ax.set_xlim(-100, 100)
 ax.set_ylim(-100, 100)
-ax.set_title("EvadeX: Missile Evasion vs Interceptors")
-ax.set_xlabel("X Distance (km)")
-ax.set_ylabel("Y Distance (km)")
+ax.set_title("EvadeX: Dynamic Window Evasion vs 10 Interceptors")
+ax.set_xlabel("X Distance")
+ax.set_ylabel("Y Distance")
 ax.grid(True)
 
-lines_m = [ax.plot([], [], 'b-', linewidth=2)[0] for _ in missiles]
-lines_i = [ax.plot([], [], 'r--', linewidth=1.5)[0] for _ in interceptors]
-
-plt.legend(lines_m + lines_i, [f"Missile #{i+1}" for i in range(len(missiles))] +
-           [f"Interceptor #{i+1}" for i in range(len(interceptors))])
+m_line, = ax.plot([], [], 'b-', linewidth=2, label="Missile")
+i_lines = [
+    ax.plot([], [], 'r--', linewidth=1.5, label=f"Interceptor #{i+1}")[0]
+    for i in range(len(interceptors))
+]
+ax.legend(loc="upper left")
 
 def update(frame):
-    for idx, m in enumerate(missiles):
-        if frame < len(m.trajectory):
-            traj = list(zip(*m.trajectory[:frame+1]))
-            lines_m[idx].set_data(traj[0], traj[1])
-    for idx, i in enumerate(interceptors):
-        if frame < len(i.trajectory):
-            traj = list(zip(*i.trajectory[:frame+1]))
-            lines_i[idx].set_data(traj[0], traj[1])
-    return lines_m + lines_i
+    mx, my = zip(*missile.trajectory[:frame+1])
+    m_line.set_data(mx, my)
+    for idx, intr in enumerate(interceptors):
+        ix, iy = zip(*intr.trajectory[:frame+1])
+        i_lines[idx].set_data(ix, iy)
+    return [m_line] + i_lines
 
-ani = animation.FuncAnimation(fig, update, frames=MAX_STEPS, blit=True)
+ani = animation.FuncAnimation(
+    fig, update,
+    frames=len(missile.trajectory),
+    interval=200,    # slowed for clarity
+    blit=True
+)
 plt.show()
