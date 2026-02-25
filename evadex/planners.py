@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import math
-from typing import Callable
+from collections.abc import Callable
 
 import numpy as np
 
@@ -50,4 +50,3 @@ def get_planner(name: str) -> PlannerFn:
     if key in {"greedy", "clearance"}:
         return greedy_clearance_heading
     raise ValueError(f"Unknown planner '{name}'")
-

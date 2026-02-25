@@ -1,16 +1,14 @@
 from __future__ import annotations
 
 import csv
-import math
 import os
-from typing import Optional
 
 import numpy as np
 
-from .missile import Missile
-from .interceptor import Interceptor
-from .evasion_ai import get_noisy_interceptor_position
 from .config import Scenario, load_scenario
+from .evasion_ai import get_noisy_interceptor_position
+from .interceptor import Interceptor
+from .missile import Missile
 from .planners import get_planner
 
 
@@ -23,15 +21,15 @@ def run_simulation(
     max_steps: int = DEFAULT_MAX_STEPS,
     telemetry_path: str = os.path.join("out", "telemetry.csv"),
     show_gui: bool = True,
-    seed: Optional[int] = None,
-    scenario_path: Optional[str] = None,
+    seed: int | None = None,
+    scenario_path: str | None = None,
     planner: str = "dwa",
 ) -> bool:
     """Run the 2D evasion simulation.
 
     Returns True if the missile evades for the duration; False if intercepted.
     """
-    scenario: Optional[Scenario] = None
+    scenario: Scenario | None = None
     if scenario_path:
         scenario = load_scenario(scenario_path)
         # scenario values override args where provided
@@ -129,8 +127,8 @@ def run_simulation(
         return not hit
 
     # animation
-    import matplotlib.pyplot as plt
     import matplotlib.animation as animation
+    import matplotlib.pyplot as plt
     fig, ax = plt.subplots()
     ax.set_xlim(-100, 100)
     ax.set_ylim(-100, 100)

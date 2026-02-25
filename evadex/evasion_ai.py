@@ -1,5 +1,5 @@
-import numpy as np
 import math
+import numpy as np
 
 
 # Destination for the 2D demo (must match sim2d default)

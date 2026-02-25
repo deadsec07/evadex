@@ -1,11 +1,10 @@
 from __future__ import annotations
 
 import glob
-import os
 from pathlib import Path
 
 from evadex.sim2d import run_simulation
-from evadex.telemetry import read_csv, min_clearance, plot_csv
+from evadex.telemetry import min_clearance, plot_csv, read_csv
 
 
 def main() -> None:
@@ -35,4 +34,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
-

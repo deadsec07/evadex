@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import csv
 from dataclasses import dataclass
-from typing import Optional
 
 import numpy as np
 
@@ -15,9 +14,9 @@ class Telemetry:
 
 
 def read_csv(path: str) -> Telemetry:
-    with open(path, "r", newline="") as f:
+    with open(path, newline="") as f:
         reader = csv.reader(f)
-        header = next(reader)
+        _ = next(reader, None)
         rows = [list(map(float, r)) for r in reader]
 
     if not rows:
@@ -45,7 +44,7 @@ def min_clearance(tele: Telemetry) -> float:
     return float(np.min(dmins))
 
 
-def plot_csv(path: str, show_gui: bool = True, save: Optional[str] = None) -> None:
+def plot_csv(path: str, show_gui: bool = True, save: str | None = None) -> None:
     tele = read_csv(path)
     if not show_gui:
         import matplotlib
@@ -69,7 +68,7 @@ def plot_csv(path: str, show_gui: bool = True, save: Optional[str] = None) -> No
         plt.show()
 
 
-def main(argv: Optional[list[str]] = None) -> int:  # simple CLI wrapper
+def main(argv: list[str] | None = None) -> int:  # simple CLI wrapper
     import argparse
 
     p = argparse.ArgumentParser(description="Plot EvadeX telemetry.csv")

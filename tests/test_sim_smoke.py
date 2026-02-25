@@ -1,8 +1,5 @@
-import os
-
 from evadex.sim2d import run_simulation
-from evadex.config import load_scenario
-from evadex.telemetry import read_csv, min_clearance, plot_csv
+from evadex.telemetry import min_clearance, plot_csv, read_csv
 
 
 def test_headless_simulation_tmp_out(tmp_path):
@@ -42,7 +39,7 @@ def test_scenario_loader_and_run(tmp_path):
 def test_telemetry_read_and_plot(tmp_path):
     out_csv = tmp_path / "telemetry.csv"
     # Produce telemetry
-    ok = run_simulation(max_steps=8, telemetry_path=str(out_csv), show_gui=False, seed=1)
+    run_simulation(max_steps=8, telemetry_path=str(out_csv), show_gui=False, seed=1)
     assert out_csv.exists()
     tele = read_csv(str(out_csv))
     mc = min_clearance(tele)

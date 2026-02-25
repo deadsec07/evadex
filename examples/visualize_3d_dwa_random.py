@@ -1,7 +1,6 @@
-import numpy as np
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.animation import FuncAnimation
+import numpy as np
 import random
 
 # ─── Configuration ───────────────────────────────────────────────────────────
@@ -105,14 +104,18 @@ lim = INTERCEPTOR_RADIUS + np.linalg.norm(GOAL) + 10
 ax.set_xlim(-lim, lim)
 ax.set_ylim(-lim, lim)
 ax.set_zlim(-lim, lim)
-ax.set_xlabel('X'); ax.set_ylabel('Y'); ax.set_zlabel('Z')
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
 ax.legend(loc='upper left')
 
 # ─── Animation callbacks ────────────────────────────────────────────────────
 def init():
-    mis_line.set_data([], []);  mis_line.set_3d_properties([])
+    mis_line.set_data([], [])
+    mis_line.set_3d_properties([])
     for ln in int_lines:
-        ln.set_data([], []); ln.set_3d_properties([])
+        ln.set_data([], [])
+        ln.set_3d_properties([])
     return [mis_line] + int_lines
 
 def update(frame):
@@ -148,4 +151,3 @@ def update(frame):
 # ─── Run animation ─────────────────────────────────────────────────────────
 ani = FuncAnimation(fig, update, frames=500, init_func=init, interval=100)
 plt.show()
-

@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
 
 
 @dataclass
@@ -11,8 +10,8 @@ class Scenario:
     max_steps: int = 500
     hit_distance: float = 2.0
     boost_cooldown_time: int = 5
-    seed: Optional[int] = None
-    planner: Optional[str] = None
+    seed: int | None = None
+    planner: str | None = None
     missile: tuple[float, float, float, float] | None = None  # x, y, speed, heading_deg
     interceptors: list[tuple[float, float, float]] | None = None  # x, y, speed
 
