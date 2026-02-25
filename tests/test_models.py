@@ -1,4 +1,5 @@
 import math
+
 import numpy as np
 
 from evadex.missile import Missile
@@ -21,4 +22,3 @@ def test_interceptor_pursue_nonincreasing_distance():
     ic.pursue(mpos)
     d1 = np.linalg.norm(ic.get_position() - mpos)
     assert d1 <= d0 + 1e-9
-

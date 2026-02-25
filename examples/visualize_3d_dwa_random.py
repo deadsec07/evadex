@@ -1,7 +1,8 @@
+import random
+
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import numpy as np
-import random
 
 # ─── Configuration ───────────────────────────────────────────────────────────
 DT                = 0.5
