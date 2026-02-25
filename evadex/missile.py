@@ -1,34 +1,30 @@
-# missile.py
-
 import numpy as np
 import math
 
+
 class Missile:
-    def __init__(self, x, y, speed, heading_deg, max_turn_deg_per_step=25):
+    def __init__(self, x: float, y: float, speed: float, heading_deg: float,
+                 max_turn_deg_per_step: float = 25) -> None:
         self.position = np.array([x, y], dtype=float)
-        self.speed = speed
+        self.speed = float(speed)
         self.heading = math.radians(heading_deg)
         self.max_turn = math.radians(max_turn_deg_per_step)
-        self.trajectory = [self.position.copy()]
+        self.trajectory: list[np.ndarray] = [self.position.copy()]
 
-        # --- thrust state ---
+        # thrust state
         self._thrust_vec = np.zeros(2, dtype=float)
         self._thrust_timer = 0
         self._thrust_cooldown = 0
 
-    def apply_thrust(self, direction_vec, magnitude, duration, cooldown):
-        """
-        direction_vec: unit vector giving thrust direction
-        magnitude: scalar thrust speed added
-        duration: how many steps this thrust lasts
-        cooldown: steps before you can thrust again
-        """
+    def apply_thrust(self, direction_vec: np.ndarray, magnitude: float,
+                     duration: int, cooldown: int) -> None:
+        """Apply a short burst of thrust if cooldown allows."""
         if self._thrust_cooldown == 0:
-            self._thrust_vec = direction_vec * magnitude
-            self._thrust_timer = duration
-            self._thrust_cooldown = cooldown
+            self._thrust_vec = direction_vec * float(magnitude)
+            self._thrust_timer = int(duration)
+            self._thrust_cooldown = int(cooldown)
 
-    def move(self):
+    def move(self) -> None:
         # baseline velocity
         vx = math.cos(self.heading) * self.speed
         vy = math.sin(self.heading) * self.speed
@@ -50,11 +46,11 @@ class Missile:
         if self._thrust_cooldown > 0:
             self._thrust_cooldown -= 1
 
-    def update_heading(self, new_heading):
+    def update_heading(self, new_heading: float) -> None:
         diff = new_heading - self.heading
         diff = math.atan2(math.sin(diff), math.cos(diff))
         diff = np.clip(diff, -self.max_turn, self.max_turn)
         self.heading += diff
 
-    def get_position(self):
+    def get_position(self) -> np.ndarray:
         return self.position.copy()

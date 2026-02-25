@@ -1,5 +1,3 @@
-# visualize_3d_dwa_random_delay.py
-
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
@@ -150,3 +148,4 @@ def update(frame):
 # ─── Run animation ─────────────────────────────────────────────────────────
 ani = FuncAnimation(fig, update, frames=500, init_func=init, interval=100)
 plt.show()
+

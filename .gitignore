@@ -3,12 +3,20 @@
 
 # Python virtual environment
 venv/
+.venv/
 
 # Python cache
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+
+# Packaging
+*.egg-info/
+build/
+dist/
+
+# Test & tool caches
+.pytest_cache/
+.ruff_cache/
 
 # VSCode settings (optional)
 .vscode/
@@ -24,4 +32,4 @@ __pycache__/
 # Output artifacts
 *.wav
 telemetry.csv
-
+out/

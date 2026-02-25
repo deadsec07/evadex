@@ -89,3 +89,4 @@ def update(frame):
 # Launch animation
 ani = FuncAnimation(fig, update, frames=200, init_func=init, interval=50, blit=False)
 plt.show()
+
