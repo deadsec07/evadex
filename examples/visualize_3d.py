@@ -1,7 +1,6 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.animation import FuncAnimation
+import matplotlib.pyplot as plt
+import numpy as np
 
 # 3D Missile and Interceptor Classes
 class Missile3D:
@@ -61,15 +60,21 @@ mis_line, = ax.plot([], [], [], lw=2, label='Missile')
 int_lines = [ax.plot([], [], [], lw=1, label=f'Interceptor {i+1}')[0] 
              for i in range(len(interceptors))]
 
-ax.set_xlim(0, 110); ax.set_ylim(-30, 30); ax.set_zlim(-30, 30)
-ax.set_xlabel('X'); ax.set_ylabel('Y'); ax.set_zlabel('Z')
+ax.set_xlim(0, 110)
+ax.set_ylim(-30, 30)
+ax.set_zlim(-30, 30)
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
 ax.legend()
 
 # Initialization for animation
 def init():
-    mis_line.set_data([], []); mis_line.set_3d_properties([])
+    mis_line.set_data([], [])
+    mis_line.set_3d_properties([])
     for ln in int_lines:
-        ln.set_data([], []); ln.set_3d_properties([])
+        ln.set_data([], [])
+        ln.set_3d_properties([])
     return [mis_line] + int_lines
 
 # Update function called each frame

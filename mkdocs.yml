@@ -1,0 +1,20 @@
+site_name: EvadeX
+site_url: https://deadsec07.github.io/evadex/
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.path
+    - content.code.annotate
+    - content.code.copy
+nav:
+  - Home: index.md
+  - Usage: usage.md
+  - Scenarios: scenarios.md
+  - Development: development.md
+
+markdown_extensions:
+  - toc:
+      permalink: true
+  - admonition
+  - codehilite

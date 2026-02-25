@@ -1,10 +1,8 @@
-# visualize_3d_dwa_random_delay.py
-
-import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib.animation import FuncAnimation
 import random
+
+from matplotlib.animation import FuncAnimation
+import matplotlib.pyplot as plt
+import numpy as np
 
 # ─── Configuration ───────────────────────────────────────────────────────────
 DT                = 0.5
@@ -107,14 +105,18 @@ lim = INTERCEPTOR_RADIUS + np.linalg.norm(GOAL) + 10
 ax.set_xlim(-lim, lim)
 ax.set_ylim(-lim, lim)
 ax.set_zlim(-lim, lim)
-ax.set_xlabel('X'); ax.set_ylabel('Y'); ax.set_zlabel('Z')
+ax.set_xlabel('X')
+ax.set_ylabel('Y')
+ax.set_zlabel('Z')
 ax.legend(loc='upper left')
 
 # ─── Animation callbacks ────────────────────────────────────────────────────
 def init():
-    mis_line.set_data([], []);  mis_line.set_3d_properties([])
+    mis_line.set_data([], [])
+    mis_line.set_3d_properties([])
     for ln in int_lines:
-        ln.set_data([], []); ln.set_3d_properties([])
+        ln.set_data([], [])
+        ln.set_3d_properties([])
     return [mis_line] + int_lines
 
 def update(frame):

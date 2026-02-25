@@ -11,13 +11,8 @@ source venv/bin/activate
 # Upgrade pip
 pip install --upgrade pip
 
-# Install dependencies
-if [ -f requirements.txt ]; then
-    echo "📦 Installing dependencies from requirements.txt..."
-    pip install -r requirements.txt
-else
-    echo "⚠️ No requirements.txt found. Skipping pip install."
-fi
+# Install package (editable) and dev tools
+echo "📦 Installing package and dev extras..."
+pip install -e .[dev]
 
 echo "✅ Setup complete. To activate later, run: source venv/bin/activate"
-
