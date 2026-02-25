@@ -2,8 +2,8 @@ import math
 
 import numpy as np
 
-from evadex.missile import Missile
 from evadex.interceptor import Interceptor
+from evadex.missile import Missile
 
 
 def test_missile_heading_clamp():

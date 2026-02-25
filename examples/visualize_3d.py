@@ -1,5 +1,5 @@
-import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+import matplotlib.pyplot as plt
 import numpy as np
 
 # 3D Missile and Interceptor Classes
