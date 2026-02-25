@@ -8,9 +8,7 @@ class MissileEvasionEnv(gym.Env):
         super().__init__()
         self.speed = 2.0
         self.max_turn = np.radians(15)
-        self.observation_space = spaces.Box(
-            low=-100, high=100, shape=(5,), dtype=np.float32
-        )
+        self.observation_space = spaces.Box(low=-100, high=100, shape=(5,), dtype=np.float32)
         self.action_space = spaces.Box(low=-1, high=1, shape=(1,), dtype=np.float32)
         self.reset()
 

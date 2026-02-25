@@ -7,7 +7,6 @@ import numpy as np
 
 from .evasion_ai import evasive_heading as evasive_heading_dwa
 
-
 PlannerFn = Callable[
     [np.ndarray, list[np.ndarray], float, float, float, int],
     tuple[float, float, bool],

@@ -11,7 +11,6 @@ from .interceptor import Interceptor
 from .missile import Missile
 from .planners import get_planner
 
-
 DEFAULT_MAX_STEPS = 500
 HIT_DISTANCE = 2.0
 BOOST_COOLDOWN_TIME = 5
@@ -129,6 +128,7 @@ def run_simulation(
     # animation
     import matplotlib.animation as animation
     import matplotlib.pyplot as plt
+
     fig, ax = plt.subplots()
     ax.set_xlim(-100, 100)
     ax.set_ylim(-100, 100)
@@ -137,7 +137,7 @@ def run_simulation(
     ax.set_ylabel("Y Distance")
     ax.grid(True)
 
-    m_line, = ax.plot([], [], "b-", linewidth=2, label="Missile")
+    (m_line,) = ax.plot([], [], "b-", linewidth=2, label="Missile")
     i_lines = [
         ax.plot([], [], "r--", linewidth=1.5, label=f"Interceptor #{i+1}")[0]
         for i in range(len(interceptors))
@@ -152,8 +152,6 @@ def run_simulation(
             i_lines[idx].set_data(ix, iy)
         return [m_line] + i_lines
 
-    animation.FuncAnimation(
-        fig, update, frames=len(missile.trajectory), interval=200, blit=True
-    )
+    animation.FuncAnimation(fig, update, frames=len(missile.trajectory), interval=200, blit=True)
     plt.show()
     return not hit

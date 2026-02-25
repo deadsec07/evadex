@@ -4,8 +4,14 @@ import numpy as np
 
 
 class Missile:
-    def __init__(self, x: float, y: float, speed: float, heading_deg: float,
-                 max_turn_deg_per_step: float = 25) -> None:
+    def __init__(
+        self,
+        x: float,
+        y: float,
+        speed: float,
+        heading_deg: float,
+        max_turn_deg_per_step: float = 25,
+    ) -> None:
         self.position = np.array([x, y], dtype=float)
         self.speed = float(speed)
         self.heading = math.radians(heading_deg)
@@ -17,8 +23,9 @@ class Missile:
         self._thrust_timer = 0
         self._thrust_cooldown = 0
 
-    def apply_thrust(self, direction_vec: np.ndarray, magnitude: float,
-                     duration: int, cooldown: int) -> None:
+    def apply_thrust(
+        self, direction_vec: np.ndarray, magnitude: float, duration: int, cooldown: int
+    ) -> None:
         """Apply a short burst of thrust if cooldown allows."""
         if self._thrust_cooldown == 0:
             self._thrust_vec = direction_vec * float(magnitude)

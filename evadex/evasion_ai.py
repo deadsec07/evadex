@@ -2,7 +2,6 @@ import math
 
 import numpy as np
 
-
 # Destination for the 2D demo (must match sim2d default)
 MISSILE_DESTINATION = np.array([100.0, 100.0], dtype=float)
 
@@ -35,9 +34,7 @@ def evasive_heading(
     best = (current_heading, base_speed, False)
 
     # candidate headings within ±max_turn
-    headings = np.linspace(
-        current_heading - max_turn, current_heading + max_turn, HEADING_SAMPLES
-    )
+    headings = np.linspace(current_heading - max_turn, current_heading + max_turn, HEADING_SAMPLES)
 
     # candidate speeds based on boost availability
     speed_funcs = SPEED_OPTIONS if boost_cooldown == 0 else SPEED_OPTIONS[:1]
@@ -67,9 +64,7 @@ def evasive_heading(
 
             # score = clearance – λ1*(goal distance) – λ2*(power penalty)
             power_pen = POWER_WEIGHT * ((s - base_speed) ** 2)
-            score = (
-                INTERCEPT_WEIGHT * min_dist - GOAL_WEIGHT * goal_progress - power_pen
-            )
+            score = INTERCEPT_WEIGHT * min_dist - GOAL_WEIGHT * goal_progress - power_pen
 
             if score > best_score:
                 best_score = score
