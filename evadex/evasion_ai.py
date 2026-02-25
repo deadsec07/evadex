@@ -2,7 +2,6 @@ import math
 
 import numpy as np
 
-
 # Destination for the 2D demo (must match sim2d default)
 MISSILE_DESTINATION = np.array([100.0, 100.0], dtype=float)
 

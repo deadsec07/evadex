@@ -11,7 +11,6 @@ from .interceptor import Interceptor
 from .missile import Missile
 from .planners import get_planner
 
-
 DEFAULT_MAX_STEPS = 500
 HIT_DISTANCE = 2.0
 BOOST_COOLDOWN_TIME = 5
