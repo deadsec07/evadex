@@ -1,5 +1,6 @@
 site_name: EvadeX
 site_url: https://deadsec07.github.io/evadex/
+site_description: Educational pursuit-evasion simulator with a minimal reinforcement learning environment, telemetry logging, and scenario-driven experimentation.
 theme:
   name: material
   features:
